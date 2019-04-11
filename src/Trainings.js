@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Moment from "react-moment";
+import { API } from "./config";
 
 class Trainings extends Component {
 	state = {
@@ -8,7 +9,7 @@ class Trainings extends Component {
 	};
 
 	componentDidMount() {
-		fetch("https://customerrest.herokuapp.com/api/trainings")
+		fetch(`${API}/trainings`)
 			.then(response => {
 				return response.json();
 			})

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { API } from "./config";
 
 class Customers extends Component {
 	state = {
@@ -7,7 +8,7 @@ class Customers extends Component {
 	};
 
 	componentDidMount() {
-		fetch("https://customerrest.herokuapp.com/api/customers")
+		fetch(`${API}/customers`)
 			.then(response => {
 				return response.json();
 			})
