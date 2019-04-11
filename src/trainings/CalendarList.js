@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Moment from "react-moment";
-import { API } from "./config";
+import { API } from "../config";
 
-class Trainings extends Component {
+class CalendarTrainingsList extends Component {
 	state = {
 		searchTerm: "",
 		trainings: []
@@ -86,4 +86,4 @@ class Trainings extends Component {
 	}
 }
 
-export default Trainings;
+export default CalendarTrainingsList;

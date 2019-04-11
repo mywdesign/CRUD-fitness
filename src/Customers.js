@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import { API } from "./config";
+import CustomerTrainingsList from "./trainings/CustomerList";
+import { Modal } from "react-bootstrap";
 
 class Customers extends Component {
 	state = {
 		customers: [],
-		searchTerm: ""
+		searchTerm: "",
+		customerTrainingsLinks: null,
+		showCustomerTrainingModal: false
 	};
 
 	componentDidMount() {
@@ -32,6 +36,10 @@ class Customers extends Component {
 		);
 	};
 
+	handleClose = () => {
+		this.setState({ showCustomerTrainingModal: false });
+	};
+
 	render() {
 		return (
 			<div>
@@ -48,8 +56,7 @@ class Customers extends Component {
 						/>
 					</div>
 				</div>
-
-				<table className="table">
+				<table className="table table-hover">
 					<thead>
 						<tr>
 							<th scope="col">Firstname</th>
@@ -76,7 +83,18 @@ class Customers extends Component {
 									<td>{eachItem.email}</td>
 									<td>{eachItem.phone}</td>
 									<td>
-										<button type="button" className="btn btn-primary">
+										<button
+											type="button"
+											className="btn btn-primary"
+											data-toggle="modal"
+											data-target="#customerTrainings"
+											onClick={() => {
+												this.setState({
+													customerTrainingsLinks: eachItem.links,
+													showCustomerTrainingModal: true
+												});
+											}}
+										>
 											Check
 										</button>
 									</td>
@@ -95,6 +113,21 @@ class Customers extends Component {
 						})}
 					</tbody>
 				</table>
+				<Modal
+					show={this.state.showCustomerTrainingModal}
+					onHide={this.handleClose}
+					size="lg"
+				>
+					<Modal.Header closeButton>
+						<Modal.Title>Modal heading</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<CustomerTrainingsList
+							type={"trainings"}
+							links={this.state.customerTrainingsLinks}
+						/>
+					</Modal.Body>
+				</Modal>
 			</div>
 		);
 	}

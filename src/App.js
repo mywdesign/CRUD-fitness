@@ -2,13 +2,13 @@ import React, { Component } from "react";
 
 import "./App.css";
 import Customers from "./Customers";
-import Trainings from "./Trainings";
+import CalendarTrainings from "./trainings/CalendarList";
 
-let hrefLink = "#";
+const hrefLink = "#";
 
 class App extends Component {
 	state = {
-		currentRoute: "trainings"
+		currentRoute: "customers"
 	};
 
 	render() {
@@ -51,7 +51,7 @@ class App extends Component {
 					</li>
 				</ul>
 				{this.state.currentRoute === "customers" && <Customers />}
-				{this.state.currentRoute === "trainings" && <Trainings />}
+				{this.state.currentRoute === "trainings" && <CalendarTrainings />}
 			</div>
 		);
 	}
