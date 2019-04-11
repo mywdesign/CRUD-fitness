@@ -2,8 +2,8 @@ import React, { Component } from "react";
 
 class Customers extends Component {
 	state = {
-		items: [],
-		value: "wang"
+		customers: [],
+		searchTerm: ""
 	};
 
 	componentDidMount() {
@@ -13,42 +13,41 @@ class Customers extends Component {
 			})
 			.then(jsonData => {
 				console.log(jsonData);
-				this.setState({ items: jsonData.content });
+				this.setState({ customers: jsonData.content });
 			});
 	}
+
+	getList = () => {
+		const searchTerm = this.state.searchTerm.toLowerCase();
+		return this.state.customers.filter(
+			eachItem =>
+				eachItem.firstname.toLowerCase().includes(searchTerm) ||
+				eachItem.lastname.toLowerCase().includes(searchTerm) ||
+				eachItem.streetaddress.toLowerCase().includes(searchTerm) ||
+				eachItem.postcode.toLowerCase().includes(searchTerm) ||
+				eachItem.city.toLowerCase().includes(searchTerm) ||
+				eachItem.email.toLowerCase().includes(searchTerm) ||
+				eachItem.phone.toLowerCase().includes(searchTerm)
+		);
+	};
 
 	render() {
 		return (
 			<div>
-				Search:{" "}
-				<input
-					type="text"
-					name="fname"
-					onChange={event => {
-						console.log(event.currentTarget.value);
-						this.setState({ value: event.currentTarget.value });
-					}}
-				/>
-				<input
-					type="submit"
-					value="Submit"
-					onClick={event => {
-						this.setState({
-							items: this.state.items.filter(
-								eachItem =>
-									eachItem.firstname.includes(this.state.value) ||
-									eachItem.lastname.includes(this.state.value) ||
-									eachItem.streetaddress.includes(this.state.value) ||
-									eachItem.postcode.includes(this.state.value) ||
-									eachItem.city.includes(this.state.value) ||
-									eachItem.email.includes(this.state.value) ||
-									eachItem.phone.includes(this.state.value)
-							)
-						});
-						console.log(123);
-					}}
-				/>
-				<div>{this.state.value}</div>
+				<div className="row justify-content-around m-3">
+					<div className="input-group col-4">
+						<input
+							type="text"
+							className="form-control"
+							placeholder="Search any fields..."
+							aria-label="Search any fields..."
+							onChange={event => {
+								this.setState({ searchTerm: event.currentTarget.value });
+							}}
+						/>
+					</div>
+				</div>
+
 				<table className="table">
 					<thead>
 						<tr>
@@ -65,7 +64,7 @@ class Customers extends Component {
 						</tr>
 					</thead>
 					<tbody>
-						{this.state.items.map((eachItem, index) => {
+						{this.getList().map((eachItem, index) => {
 							return (
 								<tr key={index}>
 									<td>{eachItem.firstname}</td>
