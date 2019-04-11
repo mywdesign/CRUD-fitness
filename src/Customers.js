@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import { API } from "./config";
 import CustomerTrainingsList from "./trainings/CustomerList";
 import { Modal } from "react-bootstrap";
+import CustomersList from "./customers/List";
+import NewCustomerForm from "./customers/New";
 
 class Customers extends Component {
 	state = {
 		customers: [],
 		searchTerm: "",
 		customerTrainingsLinks: null,
-		showCustomerTrainingModal: false
+		showCustomerTrainingModal: false,
+		showAddNewCustomerForm: false
 	};
 
 	componentDidMount() {
@@ -40,86 +43,67 @@ class Customers extends Component {
 		this.setState({ showCustomerTrainingModal: false });
 	};
 
+	handleOnCheckTrainings = links => {
+		this.setState({
+			customerTrainingsLinks: links,
+			showCustomerTrainingModal: true
+		});
+	};
+	handleSubmit(customer) {
+		console.log("customer", customer);
+	}
+
 	render() {
 		return (
 			<div>
-				<div className="row justify-content-around m-3">
-					<div className="input-group col-4">
+				<div className="row m-3">
+					<div className="input-group col-6">
+						<div className="input-group-prepend">
+							<span className="input-group-text">Search</span>
+						</div>
 						<input
 							type="text"
 							className="form-control"
-							placeholder="Search any fields..."
-							aria-label="Search any fields..."
+							placeholder="Type keywords in any fields..."
+							aria-label="Type keywords in any fields..."
 							onChange={event => {
 								this.setState({ searchTerm: event.currentTarget.value });
 							}}
 						/>
 					</div>
 				</div>
-				<table className="table table-hover">
-					<thead>
-						<tr>
-							<th scope="col">Firstname</th>
-							<th scope="col">Lastname</th>
-							<th scope="col">Street</th>
-							<th scope="col">Postcode</th>
-							<th scope="col">City</th>
-							<th scope="col">Email</th>
-							<th scope="col">Phone</th>
-							<th scope="col">Trainings</th>
-							<th scope="col">Add training</th>
-							<th scope="col">Delete Customer</th>
-						</tr>
-					</thead>
-					<tbody>
-						{this.getList().map((eachItem, index) => {
-							return (
-								<tr key={index}>
-									<td>{eachItem.firstname}</td>
-									<td>{eachItem.lastname}</td>
-									<td>{eachItem.streetaddress}</td>
-									<td>{eachItem.postcode}</td>
-									<td>{eachItem.city}</td>
-									<td>{eachItem.email}</td>
-									<td>{eachItem.phone}</td>
-									<td>
-										<button
-											type="button"
-											className="btn btn-primary"
-											data-toggle="modal"
-											data-target="#customerTrainings"
-											onClick={() => {
-												this.setState({
-													customerTrainingsLinks: eachItem.links,
-													showCustomerTrainingModal: true
-												});
-											}}
-										>
-											Check
-										</button>
-									</td>
-									<td>
-										<button type="button" className="btn btn-secondary">
-											Add
-										</button>
-									</td>
-									<td>
-										<button type="button" className="btn btn-danger">
-											Delete
-										</button>
-									</td>
-								</tr>
-							);
-						})}
-					</tbody>
-				</table>
+				<div className="row m-3">
+					<div className="input-group align-self-end col-2">
+						<button
+							type="button"
+							className="btn btn-primary btn-sn btn-block"
+							onClick={() => {
+								this.setState({
+									showAddNewCustomerForm: !this.state.showAddNewCustomerForm
+								});
+							}}
+						>
+							Add New Customer
+						</button>
+					</div>
+				</div>
+				{this.state.showAddNewCustomerForm && (
+					<div className="row m-3">
+						<NewCustomerForm onSubmit={this.handleSubmit} />
+					</div>
+				)}
+
+				<CustomersList
+					customers={this.getList()}
+					onCheckTrainings={this.handleOnCheckTrainings}
+				/>
 				<Modal
 					show={this.state.showCustomerTrainingModal}
 					onHide={this.handleClose}
 					size="lg"
 				>
 					<Modal.Header closeButton>
-						<Modal.Title>Modal heading</Modal.Title>
+						<Modal.Title>Customer Trainings</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
 						<CustomerTrainingsList
