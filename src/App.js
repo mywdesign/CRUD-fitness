@@ -8,7 +8,7 @@ let hrefLink = "#";
 
 class App extends Component {
 	state = {
-		currentRoute: "customers"
+		currentRoute: "trainings"
 	};
 
 	render() {
