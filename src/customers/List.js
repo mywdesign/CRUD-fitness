@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
 class CustomersList extends Component {
 	render() {
@@ -6,19 +6,19 @@ class CustomersList extends Component {
 			<table className="table table-hover">
 				<thead>
 					<tr>
-						<th scope="col" onClick={() => this.props.onSort('firstname')}>
+						<th scope="col" onClick={() => this.props.onSort("firstname")}>
 							Firstname <i className="fas fa-sort" />
 						</th>
-						<th scope="col" onClick={() => this.props.onSort('lastname')}>
+						<th scope="col" onClick={() => this.props.onSort("lastname")}>
 							Lastname <i className="fas fa-sort" />
 						</th>
 						<th scope="col">Street</th>
-						<th scope="col" onClick={() => this.props.onSort('postcode')}>
+						<th scope="col" onClick={() => this.props.onSort("postcode")}>
 							Postcode <i className="fas fa-sort" />
 						</th>
 						<th scope="col">City</th>
 						<th scope="col">Email</th>
-						<th scope="col" onClick={() => this.props.onSort('phone')}>
+						<th scope="col" onClick={() => this.props.onSort("phone")}>
 							Phone <i className="fas fa-sort" />
 						</th>
 						<th scope="col">Trainings</th>
@@ -43,14 +43,20 @@ class CustomersList extends Component {
 										type="button"
 										className="btn btn-primary"
 										onClick={() => {
-											this.props.onCheckTrainings(eachItem.links);
+											this.props.onCheckTrainings(eachItem);
 										}}
 									>
 										Check
 									</button>
 								</td>
 								<td>
-									<button type="button" className="btn btn-secondary">
+									<button
+										type="button"
+										className="btn btn-secondary"
+										onClick={() => {
+											this.props.onAddTraining(eachItem);
+										}}
+									>
 										Add
 									</button>
 								</td>
@@ -70,7 +76,8 @@ class CustomersList extends Component {
 										type="button"
 										className="btn btn-danger"
 										onClick={() => {
-											if (window.confirm('Are you sure to remove?')) this.props.onDelete(eachItem, index);
+											if (window.confirm("Are you sure to remove?"))
+												this.props.onDelete(eachItem, index);
 										}}
 									>
 										Delete

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import Moment from 'react-moment';
+import React, { Component } from "react";
+import Moment from "react-moment";
 
 class TrainingsList extends Component {
 	render() {
@@ -19,12 +19,22 @@ class TrainingsList extends Component {
 							return (
 								<tr key={index}>
 									<td>
-										<Moment format="DD.MM.YYYY HH:mm:ss">{eachItem.date}</Moment>
+										<Moment format="DD.MM.YYYY HH:mm:ss">
+											{eachItem.date}
+										</Moment>
 									</td>
 									<td>{eachItem.duration}</td>
 									<td>{eachItem.activity}</td>
 									<td>
-										<button type="button" className="btn btn-danger">
+										<button
+											type="button"
+											className="btn btn-danger"
+											onClick={() => {
+												if (window.confirm("Are you sure to remove?")) {
+													this.props.onDelete(eachItem, index);
+												}
+											}}
+										>
 											Delete
 										</button>
 									</td>

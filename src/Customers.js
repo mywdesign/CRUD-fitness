@@ -1,20 +1,23 @@
-import React, { Component } from 'react';
-import { API } from './config';
-import CustomerTrainingsList from './trainings/CustomerList';
-import { Modal } from 'react-bootstrap';
-import CustomersList from './customers/List';
-import CustomerForm from './customers/Form';
+import React, { Component } from "react";
+import { API } from "./config";
+import CustomerTrainingsList from "./trainings/CustomerList";
+import { Modal } from "react-bootstrap";
+import CustomersList from "./customers/List";
+import CustomerForm from "./customers/Form";
+import TrainingForm from "./trainings/Form";
 
 class Customers extends Component {
 	state = {
 		customers: [],
-		searchTerm: '',
+		searchTerm: "",
 		desc: true,
 		status: null,
 		customerTrainingsLinks: null,
 		showCustomerTrainingModal: false,
 		showCustomerForm: false,
-		pendingUpdatingCustomer: {}
+		showAddTrainingForm: false,
+		pendingUpdatingCustomer: {},
+		pendingAddingTraining: {}
 	};
 
 	componentDidMount() {
@@ -42,12 +45,15 @@ class Customers extends Component {
 	};
 
 	handleClose = () => {
-		this.setState({ showCustomerTrainingModal: false, showCustomerForm: false });
+		this.setState({
+			showCustomerTrainingModal: false,
+			showCustomerForm: false
+		});
 	};
 
-	handleOnCheckTrainings = links => {
+	handleOnCheckTrainings = customer => {
 		this.setState({
-			customerTrainingsLinks: links,
+			customerTrainingsLink: customer.links[2].href,
 			showCustomerTrainingModal: true
 		});
 	};
@@ -74,7 +80,11 @@ class Customers extends Component {
 
 	handleSort = field => {
 		const newCustomers = [...this.state.customers];
-		newCustomers.sort(this.state.desc ? (a, b) => this.desc(a, b, field) : (a, b) => this.asc(a, b, field));
+		newCustomers.sort(
+			this.state.desc
+				? (a, b) => this.desc(a, b, field)
+				: (a, b) => this.asc(a, b, field)
+		);
 		this.setState({
 			customers: newCustomers,
 			desc: !this.state.desc
@@ -84,26 +94,28 @@ class Customers extends Component {
 	update = customer => {
 		const url = customer.links[0].href;
 		return fetch(`${url}`, {
-			method: 'PUT',
+			method: "PUT",
 			body: JSON.stringify(customer),
 			headers: {
-				'Content-Type': 'application/json'
+				"Content-Type": "application/json"
 			}
 		});
 	};
 
 	create = customer => {
 		return fetch(`${API}/customers`, {
-			method: 'POST',
+			method: "POST",
 			body: JSON.stringify(customer),
 			headers: {
-				'Content-Type': 'application/json'
+				"Content-Type": "application/json"
 			}
 		});
 	};
 	handleSubmit = customer => {
 		if (customer.links.length) {
-			const index = this.state.customers.findIndex(obj => obj.links[0].href === customer.links[0].href);
+			const index = this.state.customers.findIndex(
+				obj => obj.links[0].href === customer.links[0].href
+			);
 			this.update(customer)
 				.then(res => res.json())
 				.then(response => {
@@ -111,37 +123,78 @@ class Customers extends Component {
 					newCustomers[index] = customer;
 					this.setState({
 						customers: newCustomers,
-						status: 'success',
+						status: "success",
 						showCustomerForm: false
 					});
 				})
-				.catch(error => console.error('Error:', error));
+				.catch(error => {
+					this.setState({
+						status: "failed"
+					});
+				});
 		} else {
 			this.create(customer)
 				.then(res => res.json())
 				.then(response => {
 					this.setState({
-						customers: [...this.state.customers, customer],
-						status: 'success',
+						customers: [...this.state.customers, response],
+						status: "success",
 						showCustomerForm: false
 					});
 				})
-				.catch(error => console.error('Error:', error));
+				.catch(error => {
+					this.setState({
+						status: "failed"
+					});
+				});
 		}
 	};
+
+	handleAddTrainingSubmit = training => {
+		fetch(`${API}/trainings`, {
+			method: "POST",
+			body: JSON.stringify({
+				...training,
+				...this.state.pendingAddingTraining
+			}),
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(res => {
+				this.setState({
+					status: "success",
+					showAddTrainingForm: false
+				});
+			})
+			.catch(error => {
+				this.setState({
+					status: "failed"
+				});
+			});
+	};
 	handleDelete = (customer, index) => {
-		fetch(customer.links.find(obj => obj.rel === 'self').href, {
-			method: 'delete'
+		fetch(customer.links[2].href, {
+			method: "delete"
 		}).then(response =>
 			this.setState({
 				customers: this.state.customers.filter((c, idx) => idx !== index)
 			})
 		);
 	};
+
 	handleEdit = (customer, index) => {
 		this.setState({
 			pendingUpdatingCustomer: customer,
 			showCustomerForm: true
+		});
+	};
+
+	handleAddTraining = customer => {
+		this.setState({
+			showCustomerForm: false,
+			showAddTrainingForm: true,
+			pendingAddingTraining: { customer: customer.links[0].href }
 		});
 	};
 
@@ -180,29 +233,46 @@ class Customers extends Component {
 						</button>
 					</div>
 				</div>
-				{this.state.status === 'success' && (
+				{this.state.status === "success" && (
 					<div className="alert alert-success">
 						Operate Successfully!
-						<button type="button" className="close" data-dismiss="alert" aria-label="Close">
+						<button
+							type="button"
+							className="close"
+							data-dismiss="alert"
+							aria-label="Close"
+						>
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 				)}
-				{this.state.status === 'failed' && (
+				{this.state.status === "failed" && (
 					<div className="alert alert-danger">
 						Operate Failed!
-						<button type="button" className="close" data-dismiss="alert" aria-label="Close">
+						<button
+							type="button"
+							className="close"
+							data-dismiss="alert"
+							aria-label="Close"
+						>
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
 				)}
 
-				<Modal show={this.state.showCustomerForm} onHide={this.handleClose} size="lg">
+				<Modal
+					show={this.state.showCustomerForm}
+					onHide={this.handleClose}
+					size="lg"
+				>
 					<Modal.Header closeButton>
 						<Modal.Title>Customer</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<CustomerForm customer={this.state.pendingUpdatingCustomer} onSubmit={this.handleSubmit} />
+						<CustomerForm
+							customer={this.state.pendingUpdatingCustomer}
+							onSubmit={this.handleSubmit}
+						/>
 					</Modal.Body>
 				</Modal>
 
@@ -212,13 +282,30 @@ class Customers extends Component {
 					onSort={this.handleSort}
 					onDelete={this.handleDelete}
 					onEdit={this.handleEdit}
+					onAddTraining={this.handleAddTraining}
 				/>
-				<Modal show={this.state.showCustomerTrainingModal} onHide={this.handleClose} size="lg">
+				<Modal
+					show={this.state.showCustomerTrainingModal}
+					onHide={this.handleClose}
+					size="lg"
+				>
 					<Modal.Header closeButton>
 						<Modal.Title>Customer Trainings</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<CustomerTrainingsList type={'trainings'} links={this.state.customerTrainingsLinks} />
+						<CustomerTrainingsList link={this.state.customerTrainingsLink} />
+					</Modal.Body>
+				</Modal>
+				<Modal
+					show={this.state.showAddTrainingForm}
+					onHide={this.handleClose}
+					size="lg"
+				>
+					<Modal.Header closeButton>
+						<Modal.Title>Add Customer Trainings</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<TrainingForm onSubmit={this.handleAddTrainingSubmit} />
 					</Modal.Body>
 				</Modal>
 			</div>

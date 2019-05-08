@@ -6,11 +6,18 @@ class CustomerTrainingsList extends Component {
 		trainings: []
 	};
 
-	componentDidMount() {
-		const endpoint = this.props.links.find(
-			link => link.rel === this.props.type
+	handleDeleteTraining = (training, index) => {
+		fetch(training.links[0].href, {
+			method: "delete"
+		}).then(response =>
+			this.setState({
+				trainings: this.state.trainings.filter((c, idx) => idx !== index)
+			})
 		);
-		fetch(`${endpoint.href}`)
+	};
+
+	componentDidMount() {
+		fetch(`${this.props.link}`)
 			.then(response => {
 				return response.json();
 			})
@@ -20,7 +27,12 @@ class CustomerTrainingsList extends Component {
 	}
 
 	render() {
-		return <TrainingsList trainings={this.state.trainings} />;
+		return (
+			<TrainingsList
+				trainings={this.state.trainings}
+				onDelete={this.handleDeleteTraining}
+			/>
+		);
 	}
 }
 
