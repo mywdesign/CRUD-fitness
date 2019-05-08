@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 import CustomersList from "./customers/List";
 import CustomerForm from "./customers/Form";
 import TrainingForm from "./trainings/Form";
+import moment from "moment";
 
 class Customers extends Component {
 	state = {
@@ -151,10 +152,12 @@ class Customers extends Component {
 	};
 
 	handleAddTrainingSubmit = training => {
+		console.log("training", training);
 		fetch(`${API}/trainings`, {
 			method: "POST",
 			body: JSON.stringify({
 				...training,
+				date: moment(`${training.date} ${training.time}`).format(),
 				...this.state.pendingAddingTraining
 			}),
 			headers: {

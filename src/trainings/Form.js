@@ -6,6 +6,7 @@ class TrainingForm extends Component {
 		super(props);
 		this.state = {
 			date: "",
+			time: "",
 			duration: "",
 			activity: ""
 		};
@@ -37,6 +38,18 @@ class TrainingForm extends Component {
 							type="date"
 							placeholder="date"
 							name="date"
+							required
+						/>
+					</Form.Group>
+
+					<Form.Group as={Col}>
+						<Form.Label>Time</Form.Label>
+						<Form.Control
+							onChange={this.handleChange}
+							value={this.state.time}
+							type="time"
+							placeholder="time"
+							name="time"
 							required
 						/>
 					</Form.Group>
