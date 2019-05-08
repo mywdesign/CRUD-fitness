@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 class CustomersList extends Component {
 	render() {
@@ -6,15 +6,24 @@ class CustomersList extends Component {
 			<table className="table table-hover">
 				<thead>
 					<tr>
-						<th scope="col">Firstname</th>
-						<th scope="col">Lastname</th>
+						<th scope="col" onClick={() => this.props.onSort('firstname')}>
+							Firstname <i className="fas fa-sort" />
+						</th>
+						<th scope="col" onClick={() => this.props.onSort('lastname')}>
+							Lastname <i className="fas fa-sort" />
+						</th>
 						<th scope="col">Street</th>
-						<th scope="col">Postcode</th>
+						<th scope="col" onClick={() => this.props.onSort('postcode')}>
+							Postcode <i className="fas fa-sort" />
+						</th>
 						<th scope="col">City</th>
 						<th scope="col">Email</th>
-						<th scope="col">Phone</th>
+						<th scope="col" onClick={() => this.props.onSort('phone')}>
+							Phone <i className="fas fa-sort" />
+						</th>
 						<th scope="col">Trainings</th>
 						<th scope="col">Add training</th>
+						<th scope="col">Edit Customer</th>
 						<th scope="col">Delete Customer</th>
 					</tr>
 				</thead>
@@ -46,7 +55,24 @@ class CustomersList extends Component {
 									</button>
 								</td>
 								<td>
-									<button type="button" className="btn btn-danger">
+									<button
+										type="button"
+										className="btn btn-secondary"
+										onClick={() => {
+											this.props.onEdit(eachItem, index);
+										}}
+									>
+										Edit
+									</button>
+								</td>
+								<td>
+									<button
+										type="button"
+										className="btn btn-danger"
+										onClick={() => {
+											if (window.confirm('Are you sure to remove?')) this.props.onDelete(eachItem, index);
+										}}
+									>
 										Delete
 									</button>
 								</td>

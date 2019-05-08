@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import Moment from "react-moment";
+import React, { Component } from 'react';
+import Moment from 'react-moment';
 
 class TrainingsList extends Component {
 	render() {
@@ -11,7 +11,6 @@ class TrainingsList extends Component {
 							<th scope="col">Date</th>
 							<th scope="col">Duration (mins)</th>
 							<th scope="col">Activity</th>
-							<th scope="col">Customers</th>
 							<th scope="col">Delete</th>
 						</tr>
 					</thead>
@@ -20,17 +19,10 @@ class TrainingsList extends Component {
 							return (
 								<tr key={index}>
 									<td>
-										<Moment format="DD.MM.YYYY HH:mm:ss">
-											{eachItem.date}
-										</Moment>
+										<Moment format="DD.MM.YYYY HH:mm:ss">{eachItem.date}</Moment>
 									</td>
 									<td>{eachItem.duration}</td>
 									<td>{eachItem.activity}</td>
-									<td>
-										<button type="button" className="btn btn-primary">
-											Check
-										</button>
-									</td>
 									<td>
 										<button type="button" className="btn btn-danger">
 											Delete
