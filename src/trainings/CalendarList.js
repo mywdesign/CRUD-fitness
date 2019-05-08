@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-// import Dayz from "dayz";
-// import "dayz/dist/dayz.css";
-// import { extendMoment } from "moment-range";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import BigCalendar from "react-big-calendar";
