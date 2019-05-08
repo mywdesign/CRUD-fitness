@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import "./App.css";
 import Customers from "./Customers";
-import CalendarTrainings from "./trainings/CalendarList";
+import NormalTrainingsList from "./trainings/NormalList";
 
 const hrefLink = "#";
 
@@ -51,7 +51,7 @@ class App extends Component {
 					</li>
 				</ul>
 				{this.state.currentRoute === "customers" && <Customers />}
-				{this.state.currentRoute === "trainings" && <CalendarTrainings />}
+				{this.state.currentRoute === "trainings" && <NormalTrainingsList />}
 			</div>
 		);
 	}

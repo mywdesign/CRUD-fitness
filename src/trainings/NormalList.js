@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Moment from "react-moment";
 import { API } from "../config";
 
-class CalendarTrainingsList extends Component {
+class NormalTrainingsList extends Component {
 	state = {
 		searchTerm: "",
 		trainings: []
@@ -18,13 +18,35 @@ class CalendarTrainingsList extends Component {
 			});
 	}
 
+	delete = (training, index) => {
+		fetch(training.links[0].href, {
+			method: "delete"
+		}).then(response =>
+			this.setState({
+				trainings: this.state.trainings.filter((c, idx) => idx !== index)
+			})
+		);
+	};
+
 	getList = () => {
 		const searchTerm = this.state.searchTerm.toLowerCase();
 		return this.state.trainings.filter(
 			eachItem =>
-				eachItem.date.toLowerCase().includes(searchTerm) ||
-				eachItem.duration.toLowerCase().includes(searchTerm) ||
-				eachItem.activity.toLowerCase().includes(searchTerm)
+				(eachItem.date &&
+					eachItem.date
+						.toString()
+						.toLowerCase()
+						.includes(searchTerm)) ||
+				(eachItem.duration &&
+					eachItem.duration
+						.toString()
+						.toLowerCase()
+						.includes(searchTerm)) ||
+				(eachItem.activity &&
+					eachItem.activity
+						.toString()
+						.toLowerCase()
+						.includes(searchTerm))
 		);
 	};
 
@@ -51,7 +73,6 @@ class CalendarTrainingsList extends Component {
 							<th scope="col">Date</th>
 							<th scope="col">Duration (mins)</th>
 							<th scope="col">Activity</th>
-							<th scope="col">Customers</th>
 							<th scope="col">Delete</th>
 						</tr>
 					</thead>
@@ -60,19 +81,23 @@ class CalendarTrainingsList extends Component {
 							return (
 								<tr key={index}>
 									<td>
-										<Moment format="DD.MM.YYYY HH:mm:ss">
+										<Moment format="YYYY-MM-DD HH:mm:ss">
 											{eachItem.date}
 										</Moment>
 									</td>
 									<td>{eachItem.duration}</td>
 									<td>{eachItem.activity}</td>
+
 									<td>
-										<button type="button" className="btn btn-primary">
-											Check
-										</button>
-									</td>
-									<td>
-										<button type="button" className="btn btn-danger">
+										<button
+											type="button"
+											className="btn btn-danger"
+											onClick={() => {
+												if (window.confirm("Are you sure to remove?")) {
+													this.delete(eachItem, index);
+												}
+											}}
+										>
 											Delete
 										</button>
 									</td>
@@ -86,4 +111,4 @@ class CalendarTrainingsList extends Component {
 	}
 }
 
-export default CalendarTrainingsList;
+export default NormalTrainingsList;
